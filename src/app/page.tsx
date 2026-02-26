@@ -28,8 +28,7 @@ export default function Home() {
           <p className="text-gray-800 text-sm leading-relaxed">
             AI-Native Full Stack Developer building production-grade autonomous agents using Spec-Kit, Gemini CLI, MCP
             servers, OpenAI SDK, and RAG systems. Expert in Next.js, TypeScript, Python, Node.js, Google Gemini, Hugging Face,
-            and cloud-native deployment. Licensed Homeopathic Doctor bridging medical expertise with AI-driven health-tech.
-            Founder & CEO of VisionDX AI — AI-powered medical imaging startup (NIC Karachi registered).
+            and cloud-native deployment. Founder & CEO of VisionDX AI — AI-powered medical imaging startup (NIC Karachi registered).
             Built prototype for Governor Sindh IT Initiative (50K+ users).
             Deployed 25+ projects | 500+ community members.
           </p>
@@ -231,9 +230,6 @@ export default function Home() {
             </p>
             <p className="text-gray-800 text-sm">
               <strong>Cloud Computing & Backend Development</strong> — Google Cloud, Hugging Face (Ongoing)
-            </p>
-            <p className="text-gray-800 text-sm">
-              <strong>Diploma in Homeopathic Medical Science (DHMS)</strong> — Central Homeopathic College, Karachi (2015–2019)
             </p>
           </div>
 
