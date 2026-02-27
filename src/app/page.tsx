@@ -1,12 +1,28 @@
 "use client";
 
+import { useEffect } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import QRCode from 'react-qr-code';
 
 export default function Home() {
+  // Auto-download PDF when coming from QR code scan
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('download') === 'true') {
+      // Wait for content to load, then trigger download
+      setTimeout(() => {
+        handleDownloadPDF();
+        // Clean URL
+        window.history.replaceState({}, '', '/');
+      }, 1000);
+    }
+  }, []);
+
   const handleDownloadPDF = async () => {
     const element = document.getElementById('cv-content');
+    const downloadBtn = document.getElementById('download-btn-container');
+    const qrCode = document.getElementById('qr-code-container');
     if (!element) return;
 
     try {
@@ -14,14 +30,49 @@ export default function Home() {
       const button = document.getElementById('download-btn');
       if (button) button.textContent = 'Downloading...';
 
+      // Hide download button and QR code from PDF
+      if (downloadBtn) downloadBtn.style.display = 'none';
+      if (qrCode) qrCode.style.display = 'none';
+
+      // Save original styles
+      const originalWidth = element.style.width;
+      const originalMaxWidth = element.style.maxWidth;
+      const originalPadding = element.style.padding;
+      const originalFontSize = element.style.fontSize;
+
+      // Add class to force fixed layout
+      element.classList.add('pdf-rendering');
+
+      // Force desktop/fixed width for PDF (A4 size simulation)
+      element.style.width = '210mm';  // A4 width
+      element.style.maxWidth = '210mm';
+      element.style.padding = '20mm'; // Fixed padding
+      element.style.fontSize = '12px'; // Base font size
+
+      // Wait for layout to settle
+      await new Promise(resolve => setTimeout(resolve, 200));
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
-        windowWidth: element.scrollWidth,
+        width: 794,  // A4 width in pixels at 96 DPI (210mm)
+        height: element.scrollHeight,
+        windowWidth: 794,
         windowHeight: element.scrollHeight
       });
+
+      // Restore original styles
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      element.style.padding = originalPadding;
+      element.style.fontSize = originalFontSize;
+      element.classList.remove('pdf-rendering');
+
+      // Show download button and QR code again
+      if (downloadBtn) downloadBtn.style.display = '';
+      if (qrCode) qrCode.style.display = '';
 
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
@@ -63,7 +114,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Download Button - Fixed at top - Responsive */}
-      <div className="fixed top-2 right-2 md:top-4 md:right-4 z-50">
+      <div id="download-btn-container" className="fixed top-2 right-2 md:top-4 md:right-4 z-50">
         <button
           id="download-btn"
           onClick={handleDownloadPDF}
@@ -97,14 +148,14 @@ export default function Home() {
             </div>
 
             {/* Right side - QR Code */}
-            <div className="flex flex-col items-center bg-white p-2 md:p-3 rounded-lg border-2 border-teal-600 mx-auto md:mx-0">
+            <div id="qr-code-container" className="flex flex-col items-center bg-white p-2 md:p-3 rounded-lg border-2 border-teal-600 mx-auto md:mx-0">
               <QRCode
-                value="http://localhost:3000"
+                value="http://192.168.100.7:3007/?download=true"
                 size={100}
                 className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28"
                 level="H"
               />
-              <p className="text-xs text-gray-600 mt-1 md:mt-2 text-center font-medium">Scan for CV</p>
+              <p className="text-xs text-gray-600 mt-1 md:mt-2 text-center font-medium">Scan to Download CV</p>
             </div>
           </div>
           <div className="h-0.5 bg-teal-600 mt-3 md:mt-4"></div>
