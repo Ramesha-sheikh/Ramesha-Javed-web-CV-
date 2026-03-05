@@ -412,9 +412,15 @@ export default function Home() {
             </p>
           </div>
 
-          <p className="text-center text-gray-500 text-sm mt-6 italic">
-            References available upon request
-          </p>
+        </section>
+
+        {/* References */}
+        <section className="mb-6">
+          <div className="border-t-2 border-gray-200 pt-4">
+            <p className="text-center text-gray-600 text-sm font-medium italic">
+              References available upon request
+            </p>
+          </div>
         </section>
 
       </div>
