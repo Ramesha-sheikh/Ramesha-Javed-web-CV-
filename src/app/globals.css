@@ -13,6 +13,22 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Fade in animation for QR code */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
 /* Fixed layout for PDF generation */
 .pdf-rendering {
   -webkit-print-color-adjust: exact !important;
@@ -20,7 +36,6 @@ body {
 }
 
 .pdf-rendering * {
-  /* Override all responsive font sizes */
   font-size: inherit !important;
 }
 
@@ -53,7 +68,6 @@ body {
   height: 100px !important;
 }
 
-/* Force flex layouts to be consistent */
 .pdf-rendering .flex {
   display: flex !important;
 }
@@ -62,65 +76,7 @@ body {
   flex-direction: row !important;
 }
 
-/* Extra safeguard - hide download button and QR code during PDF generation */
-#download-btn-container {
-  position: fixed !important;
-}
-
-body:has(.pdf-rendering) #download-btn-container,
-.pdf-rendering ~ #download-btn-container {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Hide QR code from PDF */
+/* Hide QR code section from PDF */
 .pdf-rendering #qr-code-container {
   display: none !important;
-  visibility: hidden !important;
-}
-
-/* Make header full width when QR code is hidden in PDF */
-.pdf-rendering header .flex {
-  flex-direction: column !important;
-}
-
-.pdf-rendering header .flex > div:first-child {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  #cv-content {
-    width: 210mm !important;
-    max-width: 210mm !important;
-    padding: 20mm !important;
-    margin: 0 !important;
-  }
-
-  /* Force all text to fixed sizes for PDF */
-  h1 {
-    font-size: 32px !important;
-  }
-
-  h2 {
-    font-size: 18px !important;
-  }
-
-  h3 {
-    font-size: 14px !important;
-  }
-
-  p, li, span {
-    font-size: 12px !important;
-  }
-
-  /* Hide download button in PDF */
-  #download-btn {
-    display: none !important;
-  }
 }
