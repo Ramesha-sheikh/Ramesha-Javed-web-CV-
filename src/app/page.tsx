@@ -194,39 +194,17 @@ export default function Home() {
           {/* QR Code - Toggleable */}
           {showQR && currentUrl && (
             <div id="qr-code-container" className="flex flex-col items-center gap-4 p-4 sm:p-6 bg-gray-50 rounded-lg animate-fade-in">
-              <div className="flex flex-col sm:flex-row gap-6 items-center justify-center w-full">
-                {/* QR Code for View CV */}
-                <div className="flex flex-col items-center">
-                  <div className="bg-white p-3 rounded-lg shadow-md">
-                    <QRCode
-                      value={currentUrl}
-                      size={140}
-                      className="w-32 h-32 sm:w-36 sm:h-36"
-                      level="H"
-                    />
-                  </div>
-                  <p className="text-xs sm:text-sm text-gray-700 mt-3 text-center font-semibold">📱 View CV Online</p>
-                  <p className="text-xs text-gray-500 mt-1 text-center">Scan to open in browser</p>
+              <div className="flex flex-col items-center">
+                <div className="bg-white p-4 rounded-lg shadow-md border-2 border-teal-500">
+                  <QRCode
+                    value={currentUrl}
+                    size={160}
+                    className="w-36 h-36 sm:w-40 sm:h-40"
+                    level="H"
+                  />
                 </div>
-
-                {/* QR Code for Auto-Download */}
-                <div className="flex flex-col items-center">
-                  <div className="bg-white p-3 rounded-lg shadow-md">
-                    <QRCode
-                      value={`${currentUrl}/?download=true`}
-                      size={140}
-                      className="w-32 h-32 sm:w-36 sm:h-36"
-                      level="H"
-                    />
-                  </div>
-                  <p className="text-xs sm:text-sm text-gray-700 mt-3 text-center font-semibold">📥 Auto-Download PDF</p>
-                  <p className="text-xs text-gray-500 mt-1 text-center">Scan to download directly</p>
-                </div>
-              </div>
-
-              <div className="text-xs text-gray-600 text-center bg-white px-4 py-2 rounded-md border border-gray-200">
-                <p className="font-medium">💡 How to use:</p>
-                <p className="mt-1">Left QR: Opens CV in browser | Right QR: Auto-downloads PDF</p>
+                <p className="text-sm sm:text-base text-gray-800 mt-4 text-center font-semibold">📱 Scan to View CV</p>
+                <p className="text-xs text-gray-600 mt-2 text-center">Open CV in your mobile browser</p>
               </div>
             </div>
           )}
