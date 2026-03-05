@@ -31,8 +31,17 @@ export default function Home() {
       setShowQR(false);
       setIsDownloading(true);
 
+      // Wait for state to update
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Create a clone for PDF generation (hidden from user)
       const clone = element.cloneNode(true) as HTMLElement;
+
+      // Remove QR code section completely from clone
+      const qrSection = clone.querySelector('#qr-code-container')?.closest('section');
+      if (qrSection) {
+        qrSection.remove();
+      }
 
       // Apply PDF styles to clone (off-screen)
       clone.style.position = 'absolute';
@@ -40,35 +49,41 @@ export default function Home() {
       clone.style.top = '0';
       clone.style.width = '210mm';
       clone.style.maxWidth = '210mm';
-      clone.style.padding = '20mm';
+      clone.style.padding = '15mm';
       clone.style.fontSize = '12px';
       clone.style.backgroundColor = '#ffffff';
       clone.classList.add('pdf-rendering');
-      
+
       document.body.appendChild(clone);
 
       // Wait for layout to settle
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Calculate proper height
+      const actualHeight = clone.scrollHeight;
 
       const canvas = await html2canvas(clone, {
-        scale: 2,
+        scale: 2.5,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
         width: 794,
-        height: clone.scrollHeight,
+        height: actualHeight,
         windowWidth: 794,
-        windowHeight: clone.scrollHeight
+        windowHeight: actualHeight,
+        scrollY: -window.scrollY,
+        scrollX: -window.scrollX
       });
 
       // Remove clone
       document.body.removeChild(clone);
 
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/png', 1.0);
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
-        format: 'a4'
+        format: 'a4',
+        compress: true
       });
 
       const pageWidth = 210;
@@ -79,17 +94,22 @@ export default function Home() {
       let heightLeft = imgHeight;
       let position = 0;
 
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      // Add first page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
       heightLeft -= pageHeight;
 
+      // Add additional pages if needed
       while (heightLeft > 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
         heightLeft -= pageHeight;
       }
 
-      pdf.save('Ramesha_Javed_CV.pdf');
+      // Open PDF in new tab instead of direct download
+      const pdfBlob = pdf.output('blob');
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank');
 
       // Reset loading state
       setIsDownloading(false);
