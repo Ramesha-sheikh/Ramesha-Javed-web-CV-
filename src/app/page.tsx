@@ -8,6 +8,12 @@ import QRCode from 'react-qr-code';
 export default function Home() {
   const [showQR, setShowQR] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState('');
+
+  // Set current URL for QR code
+  useEffect(() => {
+    setCurrentUrl(window.location.origin);
+  }, []);
 
   // Auto-download PDF when coming from QR code scan
   useEffect(() => {
@@ -172,7 +178,7 @@ export default function Home() {
         {/* Portfolio QR Code Section - Only for Web, Hidden in PDF */}
         <section id="qr-code-section" className="mb-6">
           <div className="flex flex-row items-center justify-between gap-3 mb-4">
-            <h2 className="text-lg sm:text-xl font-bold text-teal-600">Portfolio QR Code</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-teal-600">QR Code - Scan to View CV</h2>
             <button
               onClick={() => setShowQR(!showQR)}
               className={`font-medium py-1.5 px-3 sm:py-2 sm:px-4 rounded-lg border-2 transition-all duration-200 text-sm sm:text-base ${
@@ -186,16 +192,41 @@ export default function Home() {
           </div>
 
           {/* QR Code - Toggleable */}
-          {showQR && (
-            <div id="qr-code-container" className="flex justify-center p-4 sm:p-6 bg-gray-50 rounded-lg animate-fade-in">
-              <div className="flex flex-col items-center">
-                <QRCode
-                  value="http://192.168.100.7:3007/?download=true"
-                  size={120}
-                  className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36"
-                  level="H"
-                />
-                <p className="text-xs sm:text-sm text-gray-600 mt-2 text-center font-medium">Scan to Download CV</p>
+          {showQR && currentUrl && (
+            <div id="qr-code-container" className="flex flex-col items-center gap-4 p-4 sm:p-6 bg-gray-50 rounded-lg animate-fade-in">
+              <div className="flex flex-col sm:flex-row gap-6 items-center justify-center w-full">
+                {/* QR Code for View CV */}
+                <div className="flex flex-col items-center">
+                  <div className="bg-white p-3 rounded-lg shadow-md">
+                    <QRCode
+                      value={currentUrl}
+                      size={140}
+                      className="w-32 h-32 sm:w-36 sm:h-36"
+                      level="H"
+                    />
+                  </div>
+                  <p className="text-xs sm:text-sm text-gray-700 mt-3 text-center font-semibold">📱 View CV Online</p>
+                  <p className="text-xs text-gray-500 mt-1 text-center">Scan to open in browser</p>
+                </div>
+
+                {/* QR Code for Auto-Download */}
+                <div className="flex flex-col items-center">
+                  <div className="bg-white p-3 rounded-lg shadow-md">
+                    <QRCode
+                      value={`${currentUrl}/?download=true`}
+                      size={140}
+                      className="w-32 h-32 sm:w-36 sm:h-36"
+                      level="H"
+                    />
+                  </div>
+                  <p className="text-xs sm:text-sm text-gray-700 mt-3 text-center font-semibold">📥 Auto-Download PDF</p>
+                  <p className="text-xs text-gray-500 mt-1 text-center">Scan to download directly</p>
+                </div>
+              </div>
+
+              <div className="text-xs text-gray-600 text-center bg-white px-4 py-2 rounded-md border border-gray-200">
+                <p className="font-medium">💡 How to use:</p>
+                <p className="mt-1">Left QR: Opens CV in browser | Right QR: Auto-downloads PDF</p>
               </div>
             </div>
           )}
