@@ -31,14 +31,14 @@ export default function Home() {
       setShowQR(false);
       setIsDownloading(true);
 
-      // Wait for state to update
-      await new Promise(resolve => setTimeout(resolve, 50));
+      // Wait for React to re-render with showQR=false
+      await new Promise(resolve => setTimeout(resolve, 150));
 
       // Create a clone for PDF generation (hidden from user)
       const clone = element.cloneNode(true) as HTMLElement;
 
-      // Remove QR code section completely from clone
-      const qrSection = clone.querySelector('#qr-code-container')?.closest('section');
+      // Remove QR code section completely from clone using section ID
+      const qrSection = clone.querySelector('#qr-code-section');
       if (qrSection) {
         qrSection.remove();
       }
@@ -169,22 +169,22 @@ export default function Home() {
           <div className="h-0.5 bg-teal-600"></div>
         </header>
 
-        {/* Portfolio QR Code Section */}
-        <section className="mb-6">
+        {/* Portfolio QR Code Section - Only for Web, Hidden in PDF */}
+        <section id="qr-code-section" className="mb-6">
           <div className="flex flex-row items-center justify-between gap-3 mb-4">
             <h2 className="text-lg sm:text-xl font-bold text-teal-600">Portfolio QR Code</h2>
             <button
               onClick={() => setShowQR(!showQR)}
               className={`font-medium py-1.5 px-3 sm:py-2 sm:px-4 rounded-lg border-2 transition-all duration-200 text-sm sm:text-base ${
-                showQR 
-                  ? 'bg-teal-600 text-white border-teal-600 hover:bg-teal-700' 
+                showQR
+                  ? 'bg-teal-600 text-white border-teal-600 hover:bg-teal-700'
                   : 'bg-white text-teal-600 border-teal-600 hover:bg-teal-50'
               }`}
             >
               {showQR ? '🔒 Hide' : '📱 Show QR'}
             </button>
           </div>
-          
+
           {/* QR Code - Toggleable */}
           {showQR && (
             <div id="qr-code-container" className="flex justify-center p-4 sm:p-6 bg-gray-50 rounded-lg animate-fade-in">

@@ -96,7 +96,16 @@ body {
   margin-bottom: 4px !important;
 }
 
-/* Hide QR code section from PDF */
+/* Hide QR code section from PDF - Multiple safeguards */
+.pdf-rendering #qr-code-section {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .pdf-rendering #qr-code-container {
   display: none !important;
+  visibility: hidden !important;
 }
