@@ -32,7 +32,7 @@ export default function Home() {
       setIsDownloading(true);
 
       // Wait for state to update
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 50));
 
       // Create a clone for PDF generation (hidden from user)
       const clone = element.cloneNode(true) as HTMLElement;
@@ -57,28 +57,26 @@ export default function Home() {
       document.body.appendChild(clone);
 
       // Wait for layout to settle
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       // Calculate proper height
       const actualHeight = clone.scrollHeight;
 
       const canvas = await html2canvas(clone, {
-        scale: 2.5,
+        scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
         width: 794,
         height: actualHeight,
         windowWidth: 794,
-        windowHeight: actualHeight,
-        scrollY: -window.scrollY,
-        scrollX: -window.scrollX
+        windowHeight: actualHeight
       });
 
-      // Remove clone
+      // Remove clone immediately
       document.body.removeChild(clone);
 
-      const imgData = canvas.toDataURL('image/png', 1.0);
+      const imgData = canvas.toDataURL('image/png', 0.95);
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -106,10 +104,19 @@ export default function Home() {
         heightLeft -= pageHeight;
       }
 
-      // Open PDF in new tab instead of direct download
+      // Open PDF in new tab
       const pdfBlob = pdf.output('blob');
       const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, '_blank');
+      const newWindow = window.open(pdfUrl, '_blank');
+
+      if (!newWindow) {
+        // If popup blocked, download directly
+        pdf.save('Ramesha_Javed_CV.pdf');
+        alert('Popup blocked! PDF downloaded instead.');
+      }
+
+      // Clean up
+      setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
 
       // Reset loading state
       setIsDownloading(false);
